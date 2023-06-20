@@ -51,7 +51,14 @@ warmStrategyCache({
 registerRoute(
   // These will filter out all requests that do not match one of these destination types
   ({ request }) => ['image', 'script', 'style', 'font'].includes(request.destination),
-  assetCache
+  new StaleWhileRevalidate({
+    cacheName: 'asset-cache',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+    ],
+  })
 );
 
 offlineFallback({
