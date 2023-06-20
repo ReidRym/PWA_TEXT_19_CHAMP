@@ -18,12 +18,54 @@ module.exports = () => {
       path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
-      
+      new HtmlWebpackPlugin({
+        template: './src/index.html',
+        title: 'Progressive Web Application',
+      }),
+
+      new InjectManifest({
+        swSrc: './src/sw.js',
+        swDest: 'sw.js',
+      }),
+
+      new WebpackPwaManifest({
+        fingerprints: false,
+        inject: true,
+        name: 'Progressive Web Application',
+        short_name: 'PWA',
+        description: 'A simple PWA application',
+        background_color: '#ffffff',
+        theme_color: '#2196f3',
+        start_url: '/',
+        icons: [
+          {
+            src: path.resolve('src/img/icon.png'),
+            sizes: [96, 128, 192, 256, 384, 512],
+            destination: path.join('assets', 'icons'),
+          },
+        ],
+      }),
+
     ],
 
     module: {
       rules: [
-        
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        },
+
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader:'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+              plugins: ['@babel/plugin-proposal-object-rest-spread', '@babel/transform-runtime'],
+            },
+          }
+        },    
       ],
     },
   };
