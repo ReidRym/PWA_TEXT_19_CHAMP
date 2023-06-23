@@ -3,7 +3,8 @@ const { CacheFirst, StaleWhileRevalidate } = require('workbox-strategies');
 const { registerRoute } = require('workbox-routing');
 const { CacheableResponsePlugin } = require('workbox-cacheable-response');
 const { ExpirationPlugin } = require('workbox-expiration');
-const { precacheAndRoute } = require('workbox-precaching/precacheAndRoute');
+// const { precacheAndRoute } = require('workbox-precaching/precacheAndRoute');
+const { precacheAndRoute } = require('workbox-precaching');
 
 precacheAndRoute(self.__WB_MANIFEST);
 
@@ -20,7 +21,7 @@ const pageCache = new CacheFirst({
 });
 
 warmStrategyCache({
-  urls: ['/index.html', '/'],
+  urls: ['/index.html','/'],
   strategy: pageCache,
 });
 
@@ -51,15 +52,17 @@ warmStrategyCache({
 registerRoute(
   // These will filter out all requests that do not match one of these destination types
   ({ request }) => ['image', 'script', 'style', 'font'].includes(request.destination),
-  new StaleWhileRevalidate({
-    cacheName: 'asset-cache',
-    plugins: [
-      new CacheableResponsePlugin({
-        statuses: [0, 200],
-      }),
-    ],
-  })
+  assetCache
 );
+//   new StaleWhileRevalidate({
+//     cacheName: 'asset-cache',
+//     plugins: [
+//       new CacheableResponsePlugin({
+//         statuses: [0, 200],
+//       }),
+//     ],
+//   })
+// );
 
 offlineFallback({
   cacheName: 'assets-defined',
