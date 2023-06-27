@@ -31,7 +31,7 @@ registerRoute(
 );
 
 // Set up asset cache
-const assetCache = new CacheFirst({
+const assetCache = new StaleWhileRevalidate({
   cacheName: 'asset-cache',
   plugins: [
     new CacheableResponsePlugin({
